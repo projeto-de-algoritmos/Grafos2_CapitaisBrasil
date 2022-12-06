@@ -1,4 +1,4 @@
-[# Grafos2_CapitaisBrasil
+# Grafos2_CapitaisBrasil
 
 
 **Número da Lista**: 31<br>
