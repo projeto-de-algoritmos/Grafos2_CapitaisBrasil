@@ -1,8 +1,13 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
+from src.grafo import Grafo, siglas, adjacencias
+from src.dijkstra import dijkstra
+
+grafo = Grafo(siglas, adjacencias)
 
 
+# Lista de opções que aparecerão na caixa de seleção
 lista_estados_partida = [
     '', 'AC', 'AL', 'AM', 'AP', 'BA', 'CE',
     'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT',
@@ -10,6 +15,7 @@ lista_estados_partida = [
     'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO'
 ]
 
+# Dicionário para cores usadas na interface
 cores = {
     'preto': '#242323',
     'cinza': '#c1c4be',
@@ -22,7 +28,7 @@ cores = {
 def selecionar(e):
     """
     Capta o evento associado a seleção de um estado
-    na Combobox do estado de partida.
+    na Combobox (caixa de seleção) do estado de partida.
     """
 
     # Limpa o campo do estado de destino caso
@@ -50,6 +56,10 @@ def selecionar(e):
 
 
 def calcular_trajeto():
+    """
+    Reage ao evento do clique no botão e
+    calcula a distância entre os estados.
+    """
     estado_partida = combo_estado_partida.get()
     estado_destino = combo_estado_destino.get()
 
@@ -57,10 +67,12 @@ def calcular_trajeto():
         msg_calculo.config(text='Selecione os estados.')
         return
 
-    msg_calculo.config(text=mensagem(['SC', 'AC', 'DF', 'GO', 'MA', 'PA', 'AM'], estado_partida, estado_destino))
+    estados_do_caminho, menor_distancia = dijkstra(grafo=grafo, estado_partida=estado_partida)
+
+    msg_calculo.config(text=mensagem(estados_do_caminho, menor_distancia, estado_partida, estado_destino))
 
 
-def mensagem(caminho, e_partida, e_destino):
+def mensagem(nos_do_caminho, menor_caminho, e_partida, e_chegada):
     estados = {
         'AC': 'Acre', 'AL': 'Alagoas', 'AM': 'Amazonas', 'AP': 'Amapá',
         'BA': 'Bahia', 'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
@@ -70,13 +82,29 @@ def mensagem(caminho, e_partida, e_destino):
         'RR': 'Roraima', 'RS': 'Rio Grande do Sul', 'SC': 'Santa Catarina', 'SE': 'Sergipe',
         'SP': 'São Paulo', 'TO': 'Tocantins'
     }
-    if not caminho[1:-1]:
-        msg = 'Esses estados fazem fronteira.'
-    else:
-        estado = [estados[i] for i in caminho]
-        msg = f"""Um caminho possível entre {estados[e_partida]} e {estados[e_destino]}
-    passando pela menor quantidade de estados é:
-{' -> '.join(estado)}"""
+    capitais = {
+        'AC': 'Rio Branco (AC)', 'AL': 'Maceió (AL)', 'AM': 'Manaus (AM)', 'AP': 'Macapá (AP)',
+        'BA': 'Salvador (BA)', 'CE': 'Fortaleza (CE)', 'DF': 'Brasília (DF)', 'ES': 'Vitória (ES)',
+        'GO': 'Goiânia (GO)', 'MA': 'São Luís (MA)', 'MG': 'Belo Horizonte (MG)', 'MS': 'Campo Grande (MS)',
+        'MT': 'Cuiabá (MT)', 'PA': 'Belém (PA)', 'PB': 'João Pessoa (PB)', 'PE': 'Recife (PE)', 'PI': 'Teresina (PI)',
+        'PR': 'Curitiba (PR)', 'RJ': 'Rio de Janeiro (RJ)', 'RN': 'Natal (RN)', 'RO': 'Porto Velho (RO)',
+        'RR': 'Boa Vista (RR)', 'RS': 'Porto Alegre (RS)', 'SC': 'Florianópolis (SC)', 'SE': 'Aracaju (SE)',
+        'SP': 'São Paulo (SP)', 'TO': 'Palmas (TO)'
+    }
+
+    caminho = []
+    node = e_chegada
+    while node != e_partida:
+        caminho.append(node)
+        node = nos_do_caminho[node]
+
+    # Adicionando o nó (estado) inicial manualmente ao final da lista
+    caminho.append(e_partida)
+
+    capital = [capitais[i] for i in caminho]
+    msg = f"""A menor distância por rodovias entre as capitais de {estados[e_partida]} e {estados[e_chegada]}, passando
+pelas capitais de cada um dos outros estados é cerca de {menor_caminho[e_chegada]*1000:.0f} km.
+{', '.join(reversed(capital))}"""
 
     return msg
 
