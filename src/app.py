@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
-from src.grafo import Grafo, siglas, adjacencias
-from src.dijkstra import dijkstra
+from grafo import Grafo, siglas, adjacencias
+from dijkstra import dijkstra
 
 grafo = Grafo(siglas, adjacencias)
 

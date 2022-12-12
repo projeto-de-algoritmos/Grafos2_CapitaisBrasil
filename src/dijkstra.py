@@ -1,5 +1,5 @@
 from math import inf
-from src.grafo import Grafo
+from grafo import Grafo
 
 
 def dijkstra(grafo: Grafo, estado_partida):
