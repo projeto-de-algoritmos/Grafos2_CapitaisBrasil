@@ -42,8 +42,4 @@ Em seguida clone o repositório e entre na pasta src e digite o seguinte comando
 Com a aplicação em execução, selecione um estado de partida e depois um de destino e clique no botão para calcular o trajeto.
 
 ## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
-
-
-
-
+Os dados utilizados como base para as distâncias entre capitais foi retirado deste site (https://goodway.com.br/distancias.htm)
